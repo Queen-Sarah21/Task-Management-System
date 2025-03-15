@@ -1,24 +1,25 @@
-#stage 1 (BUILD)
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
+# stage 1 (BUILD)
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 # SDK => Software Development Kit
 
 WORKDIR /src
 
 ENV PATH="$PATH:/root/.dotnet/tools"
 
-# Copy the project file and restore the dependencies - package.json
+# like .csproj = package.json package-lock.json ... *.json
 COPY *.csproj .
 
-#like => npm install
+# like npm install
 RUN dotnet restore
 
 COPY . .
 
-#like => npm run build 
+# like => npm run build
 RUN dotnet publish -c Release -o /app/publish
 
 # stage 2 (RUN)
+
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 WORKDIR /app
